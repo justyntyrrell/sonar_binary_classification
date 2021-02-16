@@ -1,11 +1,18 @@
-# Sonar Binary Classification
-**Libraries Used:** pandas, numpy, sklearn, tensorflow / keras, matplotlib
+![Banner](images/banner.png)
 
-A deep neural network was used to classify an object as either rock or a mine (metal) using sonar data.
+# Sonar Binary Classification
+**Libraries Used:** pandas, numpy, sklearn, tensorflow/keras, matplotlib
+A deep neural network was used to classify an object as either rock or a mine (metal) using sonar data. The final trained model 
+
+## Project Overview 
+
+**Goal:**
+* Practice using tensorflow and keras for deeplearning. 
+* I chose this dataset because it is frequestly cited in published papers on machine learning. 
+Reading some of the papers I can get an understanding of some teqniques used and a benchmark on good model performcance. For example, [this paper's](https://www.ijsr.net/archive/v9i1/ART20203916.pdf) best model was was a boosted forest with 88% accuracy.
+
 
 The data source can be found [here](https://archive.ics.uci.edu/ml/datasets/Connectionist+Bench+(Sonar,+Mines+vs.+Rocks))
-
-It provides this descrition for the data. 
 
 Data Set Information:
 
@@ -15,19 +22,12 @@ Data Set Information:
 >
 > The label associated with each record contains the letter "R" if the object is a rock and "M" if it is a mine (metal cylinder). The numbers in the labels are in increasing order of aspect angle, but they do not encode the angle directly.
 
-## Project Overview 
-
-**Goal:**
-The main goal of this project was to practice using tensorflow and keras for deeplearning. I chose this dataset because it is frequestly cited in published papers on machine learning. 
-Reading some of the papers I can get an understanding of some teqniques used and a benchmark on good model performcance. For example, [this paper's](https://www.ijsr.net/archive/v9i1/ART20203916.pdf best model was 
-)
-
-
-**Use Cases:**
-
 
 **Results and Takeaways:** 
 
-## Process Summary 
+![model diagram](images/model_diagram.png)
+![Accuracy](images/accuracy.png)
+![cross-entropy](images/cross_entropy.png)
 
+## Methodology
 
