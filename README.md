@@ -2,32 +2,60 @@
 
 # Sonar Binary Classification
 **Libraries Used:** pandas, numpy, sklearn, tensorflow/keras, matplotlib
-A deep neural network was used to classify an object as either rock or a mine (metal) using sonar data. The final trained model 
+
+A multilayer perceptron (MLP) artificial neural network was used to discriminate between sonar signals bounced off a metal cylinder and those bounced off a roughly cylindrical rock. The final model was 87.5% accurate on a test set.
 
 ## Project Overview 
 
 **Goal:**
 * Practice using tensorflow and keras for deeplearning. 
-* I chose this dataset because it is frequestly cited in published papers on machine learning. 
-Reading some of the papers I can get an understanding of some teqniques used and a benchmark on good model performcance. For example, [this paper's](https://www.ijsr.net/archive/v9i1/ART20203916.pdf) best model was was a boosted forest with 88% accuracy.
+* Practice a classification problem.
 
-
-The data source can be found [here](https://archive.ics.uci.edu/ml/datasets/Connectionist+Bench+(Sonar,+Mines+vs.+Rocks))
-
-Data Set Information:
+**Data Set Information:**
 
 > The file "sonar.mines" contains 111 patterns obtained by bouncing sonar signals off a metal cylinder at various angles and under various conditions. The file "sonar.rocks" contains 97 patterns obtained from rocks under similar conditions. The transmitted sonar signal is a frequency-modulated chirp, rising in frequency. The data set contains signals obtained from a variety of different aspect angles, spanning 90 degrees for the cylinder and 180 degrees for the rock.
 > 
-> Each pattern is a set of 60 numbers in the range 0.0 to 1.0. Each number represents the energy within a particular frequency band, integrated over a certain period of time. The integration aperture for higher frequencies occur later in time, since these frequencies are transmitted later during the chirp.
+> Each pattern is a set of 60 numbers in the range 0.0 to 1.0. Each number represents the energy within a particular frequency band, integrated over a certain period of time. The integration aperture for higher frequencies occurs later in time, since these frequencies are transmitted later during the chirp.
 >
 > The label associated with each record contains the letter "R" if the object is a rock and "M" if it is a mine (metal cylinder). The numbers in the labels are in increasing order of aspect angle, but they do not encode the angle directly.
 
+The data source can be found [here](https://archive.ics.uci.edu/ml/datasets/Connectionist+Bench+(Sonar,+Mines+vs.+Rocks))
 
-**Results and Takeaways:** 
+## Results and Takeaways:
 
-![model diagram](images/model_diagram.png)
-![Accuracy](images/accuracy.png)
-![cross-entropy](images/cross_entropy.png)
+* This dataset has been cited in published papers on machine learning. Reading some of the papers we can get an understanding of some techniques used and typical accuracy achieved. For example, [this paper's](https://www.ijsr.net/archive/v9i1/ART20203916.pdf) best model was a boosted forest with 88% accuracy. This is comparable to 87.5% achieved with the neural network. 
+
+The model chosen had a 2 hidden layers with 256 neurons and batch normalization and 30% dropout between each layer. The architecture of the final model is below.
+|![model diagram](images/model_diagram.png)|
+|:--:| 
+| *Neural Network Architecture*|
 
 ## Methodology
+
+** Investigation **
+* There are 111 mine data points and 96 rock. This is roughly half so accuracy was chosen. If the classes had very skewed them f1 score would have been a better option.
+**preprocessing** 
+* The rock or mine column contained strings M or R. This was encoded as 0 or one using sklearn label encoder.
+* The data was also scaled using sklearn standsard scale to work better with gradient descent.
+* Data was then split into train, validate, and test sets
+
+**model building** 
+* Two dense hidden layers with 256 neurons each. This was chosen to ensure enough capacity. It could likely be reduced to improve computation efficiency without impacting accuracy but not necessary for the scope of this project and small dataset.
+* Rectified linear units (ReLU) was used as activation functions and a sigmoid function for a binary output.
+* Batch normalization the reason is that SGD will shift the network weights in proportion to how large an activation the data produces. Features that tend to produce activations of very different sizes can make for unstable training behavior. 
+* dropout layers were used. Dropouts recognize these spurious patterns a network will often rely on very a specific combinations of weight, a kind of "conspiracy" of weights. Being so specific, they tend to be fragile: remove one and the conspiracy falls apart.
+* Adam used as an optimizer, a stochastic gradient descent algorithm that has an adaptive learning rate. Adam is a great general-purpose optimizer.
+
+* cross entropy as a loss function (and most other classification metrics) is that it cannot be used as a loss function. SGD needs a loss function that changes smoothly, but accuracy, being a ratio of counts, changes in "jumps". So, we must choose a substitute to act as the loss function. This substitute is the cross-entropy function.
+
+and binary accuracy as a performance metric
+* stop the training whenever it seems the validation loss is not decreasing anymore. Interrupting the training this way is called early stopping and is done through a callback function.
+
+
+|![Accuracy](images/accuracy.png)|
+|:--:| 
+| *Validation and training accuracy vs number of times the NN has been trained (Epoch)*|
+![cross-entropy](images/cross_entropy.png)|
+| *Loss vs Epoch* |
+
 
