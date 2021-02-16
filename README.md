@@ -25,32 +25,32 @@ The data source can be found [here](https://archive.ics.uci.edu/ml/datasets/Conn
 
 * This dataset has been cited in published papers on machine learning. Reading some of the papers we can get an understanding of some techniques used and typical accuracy achieved. For example, [this paper's](https://www.ijsr.net/archive/v9i1/ART20203916.pdf) best model was a boosted forest with 88% accuracy. This is comparable to 87.5% achieved with the neural network. 
 
-The model chosen had a 2 hidden layers with 256 neurons and batch normalization and 30% dropout between each layer. The architecture of the final model is below.
+The model chosen had 2 hidden layers with 256 fully connected neurons. It also had batch normalization and dropout between layers. The architecture of the final model is below.
 |![model diagram](images/model_diagram.png)|
 |:--:| 
 | *Neural Network Architecture*|
 
 ## Methodology
 
-** Investigation **
-* There are 111 mine data points and 96 rock. This is roughly half so accuracy was chosen. If the classes had very skewed them f1 score would have been a better option.
-**preprocessing** 
-* The rock or mine column contained strings M or R. This was encoded as 0 or one using sklearn label encoder.
-* The data was also scaled using sklearn standsard scale to work better with gradient descent.
-* Data was then split into train, validate, and test sets
+**Investigation**
 
-**model building** 
-* Two dense hidden layers with 256 neurons each. This was chosen to ensure enough capacity. It could likely be reduced to improve computation efficiency without impacting accuracy but not necessary for the scope of this project and small dataset.
+* There are 111 mine data points and 96 rock data points. This is roughly a 50/50 distribution so binary accuracy was used as a performance metric. If the classes were imbalanced then F1-score would have been a better option.
+
+**Preprocessing**
+
+* The output column contained strings M or R. This was encoded as 0 or 1 using sklearn label encoder.
+* The data was also scaled using sklearn standard scale for improved stability with stochastic gradient descent.
+* Data was split into train, validation, and test sets
+
+**Model building** 
+
+* Two dense hidden layers with 256 neurons each. This was chosen to ensure enough capacity. This could likely be reduced to improve computation efficiency without impacting accuracy but this given the small dataset training is still very quick.
 * Rectified linear units (ReLU) was used as activation functions and a sigmoid function for a binary output.
-* Batch normalization the reason is that SGD will shift the network weights in proportion to how large an activation the data produces. Features that tend to produce activations of very different sizes can make for unstable training behavior. 
-* dropout layers were used. Dropouts recognize these spurious patterns a network will often rely on very a specific combinations of weight, a kind of "conspiracy" of weights. Being so specific, they tend to be fragile: remove one and the conspiracy falls apart.
-* Adam used as an optimizer, a stochastic gradient descent algorithm that has an adaptive learning rate. Adam is a great general-purpose optimizer.
-
-* cross entropy as a loss function (and most other classification metrics) is that it cannot be used as a loss function. SGD needs a loss function that changes smoothly, but accuracy, being a ratio of counts, changes in "jumps". So, we must choose a substitute to act as the loss function. This substitute is the cross-entropy function.
-
-and binary accuracy as a performance metric
-* stop the training whenever it seems the validation loss is not decreasing anymore. Interrupting the training this way is called early stopping and is done through a callback function.
-
+* Batch normalization laers were used. This is beneficial becuase stochastic gradient descent will shift the network weights in proportion to how large an activation the data produces. Features that tend to produce activations of very different sizes can make for unstable training behavior. 
+* Dropout layers were used. Dropouts help prevent overfitting which often occurs when the model learns spurious patterns. A network will often rely on very a specific combinations of weights when modeling these spurious patterns. Being so specific, they tend to be fragile: remove one and the conspiracy falls apart.
+* Adam optimizer was used, a stochastic gradient descent algorithm that has an adaptive learning rate. Adam is a great general-purpose optimizer.
+* Cross-entropy as a loss function to optimize. Accuracy cannot be used as a 'smooth' function is required.
+* Early stopping was used using a callbak function. This stops training when the loss function stops decreasing (seen in cross-entropy grapgh below)
 
 |![Accuracy](images/accuracy.png)|
 |:--:| 
@@ -58,4 +58,6 @@ and binary accuracy as a performance metric
 ![cross-entropy](images/cross_entropy.png)|
 | *Loss vs Epoch* |
 
-
+**Next Steps**
+* The nueral network parameters could likely be tuned further for increased accuracy performance. 
+* Depending on the application, computation cost could also be improved. This would likely  since the objective is to detect mines, 
